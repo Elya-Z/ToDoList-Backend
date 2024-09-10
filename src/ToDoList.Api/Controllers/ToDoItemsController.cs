@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Api.Models;
 using ToDoList.Api.Repositories;
@@ -7,7 +7,7 @@ namespace ToDoList.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [EnableCors("AnyOrigin")]
     public class ToDoItemsController(ToDoItemRepository repository) : ControllerBase
     {
         private readonly ToDoItemRepository _repository = repository;

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Api.Data;
 using ToDoList.Api.Repositories;
+using Microsoft.AspNetCore.Cors;
 
 namespace ToDoList.Api
 {
@@ -10,6 +11,17 @@ namespace ToDoList.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AnyOrigin", cfg =>
+                {
+                    cfg.AllowAnyOrigin();
+                    cfg.AllowAnyHeader();
+                    cfg.AllowAnyMethod();
+                });
+            });
+
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -37,6 +49,7 @@ namespace ToDoList.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AnyOrigin");
 
             app.UseAuthorization();
 
