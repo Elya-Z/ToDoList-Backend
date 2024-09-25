@@ -13,11 +13,11 @@ namespace ToDoList.Api.Repositories
             _context = context;
         }
 
-        public async Task<ToDoItem?> GetByIdAsync(int id) 
+        public async Task<ToDoItem?> GetByIdAsync(int id)
         {
-            return await _context.ToDoItem.SingleOrDefaultAsync(toDoItem => toDoItem.Id == id);        
-
+            return await _context.ToDoItem.SingleOrDefaultAsync(toDoItem => toDoItem.Id == id);
         }
+
         public async Task<IEnumerable<ToDoItem?>> GetAllAsync()
         {
             return await _context.ToDoItem.ToListAsync();
@@ -25,17 +25,20 @@ namespace ToDoList.Api.Repositories
 
         public async Task UpdateAsync(ToDoItem model)
         {
-           _context.ToDoItem.Update(model);
-           await _context.SaveChangesAsync();
+            _context.ToDoItem.Update(model);
+            await _context.SaveChangesAsync();
         }
-        
+
         public async Task AddAsync(ToDoItem model)
         {
-            
             var lastItem = await _context.ToDoItem
                        .OrderByDescending(p => p.Id)
                        .FirstOrDefaultAsync();
-            model.Id = lastItem.Id + 1;
+            if (lastItem == null)
+                model.Id = 0;
+            else
+                model.Id = lastItem.Id + 1;
+
             await _context.ToDoItem.AddAsync(model);
             await _context.SaveChangesAsync();
         }
@@ -43,13 +46,12 @@ namespace ToDoList.Api.Repositories
         public async Task DeleteAsync(int id)
         {
             var model = await GetByIdAsync(id);
-            if (model == null) 
+            if (model == null)
             {
                 return;
             }
             _context.Remove(model);
             await _context.SaveChangesAsync();
-
         }
     }
 }
